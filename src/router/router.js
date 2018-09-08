@@ -3,13 +3,13 @@ import App from '../App'
 const home = r => require.ensure([],() => r(require('../page/home/home')),'home')
 const city = r => require.ensure([],() => r(require('../page/city/city')),'city')
 const msite = r => require.ensure([],() => r(require('../page/msite/msite')),'msite')
-const search = r => require.ensure([], () => r(require('../page/search/search')), 'search')
+const search = r => require.ensure([],() => r(require('../page/search/search')),'search')
 const shop = r => require.ensure([], () => r(require('../page/shop/shop')), 'shop')
 const login = r => require.ensure([],() => r(require('../page/login/login')),'login')
-const profile = r => require.ensure([], () => r(require('../page/profile/profile')), 'profile')
+const profile = r => require.ensure([],() => r(require('../page/profile/profile')),'profile')
 const forget = r => require.ensure([],() => r(require('../page/forget/forget')),'forget');
-const order = r => require.ensure([], () => r(require('../page/order/order')), 'order')
-const orderDetail = r => require.ensure([], () => r(require('../page/order/children/orderDetail')), 'orderDetail')
+const order = r => require.ensure([],() => r(require('../page/order/order')),'order')
+const orderDetail = r => require.ensure([],() => r(require('../page/order/children/orderDetail')),'orderDetail')
 const vipcard = r => require.ensure([], () => r(require('../page/vipcard/vipcard')), 'vipcard')
 const invoiceRecord = r => require.ensure([], () => r(require('../page/vipcard/children/invoiceRecord')), 'invoiceRecord')
 const useCart = r => require.ensure([], () => r(require('../page/vipcard/children/useCart')), 'useCart')
@@ -65,41 +65,38 @@ export default [{
         path: '/city/:cityid',
         component: city
     },
-    //所有商铺列表页
-    {
-      path:'/msite',
-      component:msite,
-      meta:{keepAlive:true},
-    },
+  //所有商铺列表页
+  {
+   path:'/msite',
+   component:msite,
+   meata:{keepAlive:true},
+  },
+ //搜索页
+ {
+  path:'/search/:geohash',
+  component:search,
+ },
+ //订单列表页
+ {
+   path:'/order',
+   component:order,
+   children:[{
+       path:'orderDetail',//订单详情页
+       component:orderDetail,
+   }]
+ },
     //登录注册页
     {
       path:'/login',
       component:login,
     },
-     //个人信息页
-     {
-         path:'/profile',
-         component:profile,
-         children:[{
-             path:'info',
-             component:info,
-             children:[{
-                 path:'setusername',
-                 component:setusername,
-             },{
-                 path:'address',
-                 component:address,//编辑地址
-                 children:[{
-                     path:'add',
-                     component:add,
-                     children:[{
-                         path:'addDetail',
-                         component:addDetail
-                     }]
-                 }]
-             }]
-         }]
-     },
+    //个人信息页
+    {
+        path:'/profile',
+        component:profile,
+
+
+    },
      //修改密码页
      {
       path:'/forget',
