@@ -4,7 +4,7 @@ const home = r => require.ensure([],() => r(require('../page/home/home')),'home'
 const city = r => require.ensure([],() => r(require('../page/city/city')),'city')
 const msite = r => require.ensure([],() => r(require('../page/msite/msite')),'msite')
 const search = r => require.ensure([],() => r(require('../page/search/search')),'search')
-const shop = r => require.ensure([], () => r(require('../page/shop/shop')), 'shop')
+const shop = r => require.ensure([],() => r(require('../page/shop/shop')),'shop')
 const login = r => require.ensure([],() => r(require('../page/login/login')),'login')
 const profile = r => require.ensure([],() => r(require('../page/profile/profile')),'profile')
 const forget = r => require.ensure([],() => r(require('../page/forget/forget')),'forget');
@@ -14,7 +14,7 @@ const vipcard = r => require.ensure([], () => r(require('../page/vipcard/vipcard
 const invoiceRecord = r => require.ensure([], () => r(require('../page/vipcard/children/invoiceRecord')), 'invoiceRecord')
 const useCart = r => require.ensure([], () => r(require('../page/vipcard/children/useCart')), 'useCart')
 const vipDescription = r => require.ensure([], () => r(require('../page/vipcard/children/vipDescription')), 'vipDescription')
-const food = r => require.ensure([], () => r(require('../page/food/food')), 'food')
+const food = r => require.ensure([], () => r(require('../page/food/food')),'food')
 const confirmOrder = r => require.ensure([], () => r(require('../page/confirmOrder/confirmOrder')), 'confirmOrder')
 const remark = r => require.ensure([], () => r(require('../page/confirmOrder/children/remark')), 'remark')
 const payment = r => require.ensure([], () => r(require('../page/confirmOrder/children/payment')), 'payment')
@@ -69,12 +69,22 @@ export default [{
   {
    path:'/msite',
    component:msite,
-   meata:{keepAlive:true},
+   meta:{keepAlive:true},
   },
+   //特色商铺列表页
+   {
+     path:'/food',
+     component:food,
+   },
  //搜索页
  {
   path:'/search/:geohash',
   component:search,
+ },
+ //商铺详情页
+ {
+  path:'/shop',
+  component:shop,
  },
  //订单列表页
  {
