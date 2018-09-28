@@ -9,11 +9,11 @@ import axios from 'axios';//引入文件
 import VueResource from 'vue-resource'
 Vue.use(VueResource);
 Vue.prototype.$ajax = axios;//将axios挂载到Vue实例中的$ajax上面,在项目中的任何位置通过this.$ajax使用
-if ('addEventListener' in document) {
-    document.addEventListener('DOMContentLoaded', function() {
-        FastClick.attach(document.body);
-    }, false);
-}
+// if ('addEventListener' in document) {
+//     document.addEventListener('DOMContentLoaded', function() {
+//         FastClick.attach(document.body);
+//     }, false);
+// }
 
 Vue.use(VueRouter)
 const router = new VueRouter({

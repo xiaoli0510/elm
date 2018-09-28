@@ -24,8 +24,8 @@ const chooseAddress = r => require.ensure([], () => r(require('../page/confirmOr
 const addAddress = r => require.ensure([], () => r(require('../page/confirmOrder/children/children/addAddress')), 'addAddress')
 const searchAddress = r => require.ensure([], () => r(require('../page/confirmOrder/children/children/children/searchAddress')), 'searchAddress')
 const foodDetail = r => require.ensure([], () => r(require('../page/shop/children/foodDetail')), 'foodDetail')
-const shopDetail = r => require.ensure([], () => r(require('../page/shop/children/shopDetail')), 'shopDetail')
-const shopSafe = r => require.ensure([], () => r(require('../page/shop/children/children/shopSafe')), 'shopSafe')
+const shopDetail = r => require.ensure([], () => r(require('../page/shop/children/shopDetail')),'shopDetail')
+const shopSafe = r => require.ensure([],() => r(require('../page/shop/children/children/shopSafe'),'shopSafe'))
 const info = r => require.ensure([], () => r(require('../page/profile/children/info')), 'info')
 const setusername = r => require.ensure([], () => r(require('../page/profile/children/children/setusername')), 'setusername')
 const address = r => require.ensure([], () => r(require('../page/profile/children/children/address')), 'address')
@@ -85,6 +85,19 @@ export default [{
  {
   path:'/shop',
   component:shop,
+  children:[{
+      path:"foodDetail",//食品详情页
+      component:foodDetail,
+      },
+      {
+      path:'shopDetail',//商铺详情页,
+      component:shopDetail,
+      children:[{
+        path:'shopSafe',//商品安全认证
+        component:shopSafe, 
+    }]
+  },
+   ]
  },
  //订单列表页
  {
@@ -94,6 +107,11 @@ export default [{
        path:'orderDetail',//订单详情页
        component:orderDetail,
    }]
+ },
+ //确认订单页
+ {
+     path:'/confirmOrder',
+     component:confirmOrder,
  },
     //登录注册页
     {

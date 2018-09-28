@@ -46,6 +46,7 @@ export default {
 
 	[RECORD_SHOPDETAIL](state, detail) {
 		state.shopDetail = detail;
+		window.localStorage.setItem('shopDetail', JSON.stringify(state.shopDetail));
 	},
 	// 加入购物车
 	[ADD_CART](state, {

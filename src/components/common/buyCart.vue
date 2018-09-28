@@ -1,6 +1,7 @@
  <template>
     <section class="cart_module">
         <section v-if="!foods.specifications.length" class="cart_button">
+            <!-- 减少数量 -->
             <transition name="showReduce">
                 <span @click="removeOutCart(foods.category_id, foods.item_id, foods.specfoods[0].food_id, foods.specfoods[0].name, foods.specfoods[0].price, '', foods.specfoods[0].packing_fee, foods.specfoods[0].sku_id, foods.specfoods[0].stock)" v-if="foodNum">
                     <svg>
@@ -11,6 +12,7 @@
             <transition name="fade">
                 <span class="cart_num" v-if="foodNum">{{foodNum}}</span>
             </transition>
+            <!-- 增加数量 -->
             <svg class="add_icon" @touchstart="addToCart(foods.category_id, foods.item_id, foods.specfoods[0].food_id, foods.specfoods[0].name, foods.specfoods[0].price, '', foods.specfoods[0].packing_fee, foods.specfoods[0].sku_id, foods.specfoods[0].stock, $event)">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
             </svg>
@@ -18,6 +20,7 @@
         <section v-else class="choose_specification">
             <section class="choose_icon_container">
                 <transition name="showReduce">
+                    <!-- 当数字<1的时候提示不能再减 -->
                     <svg class="specs_reduce_icon" v-if="foodNum" @click="showReduceTip">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
                     </svg>
@@ -59,7 +62,11 @@
                 if (this.shopCart&&this.shopCart[category_id]&&this.shopCart[category_id][item_id]) {
                     let num = 0;
                     Object.values(this.shopCart[category_id][item_id]).forEach((item,index) => {
-                        num += item.num;
+                        if(item!==null){
+                          num = item.num;  
+                        }else{
+                            num = 0;
+                        }
                     })
                     return num;
                 }else {
