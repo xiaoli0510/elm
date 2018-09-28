@@ -76,16 +76,18 @@
     import {mapState} from 'vuex'
     import {getImgPath} from 'src/components/common/mixin'
     import {imgBaseUrl} from 'src/config/env'
-
+  
     export default {
     	data(){
             return{
                licenseImg: null,
                showlicenseImg: false,
+               localData:'',
                imgBaseUrl
             }
         },
         created(){
+           this.localData = JSON.parse(window.localStorage.getItem('shopDetail'));   
             console.log(this.shopDetail)
         },
         mounted(){
@@ -93,13 +95,12 @@
         },
           computed: mapState({
             // 为了能够使用 `this` 获取局部状态，必须使用常规函数
-            shopDetail (state) {
-                 let localData = JSON.parse(window.localStorage.getItem('shopDetail'));    
-                 console.log(localData)    
+            shopDetail (state) {   
                  if(!state.shopDetail){         
-                      this.$store.commit('RECORD_SHOPDETAIL',localData)//同步操作
+                     state.shopDetail
                  }
-                return state.shopDetail
+                  return state.shopDetail
+                
             }
       }),
         components: {
