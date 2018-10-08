@@ -16,13 +16,13 @@ const useCart = r => require.ensure([], () => r(require('../page/vipcard/childre
 const vipDescription = r => require.ensure([], () => r(require('../page/vipcard/children/vipDescription')), 'vipDescription')
 const food = r => require.ensure([], () => r(require('../page/food/food')),'food')
 const confirmOrder = r => require.ensure([], () => r(require('../page/confirmOrder/confirmOrder')), 'confirmOrder')
-const remark = r => require.ensure([], () => r(require('../page/confirmOrder/children/remark')), 'remark')
+const remark = r => require.ensure([], () => r(require('../page/confirmOrder/children/remark')),'remark')
 const payment = r => require.ensure([], () => r(require('../page/confirmOrder/children/payment')), 'payment')
 const userValidation = r => require.ensure([], () => r(require('../page/confirmOrder/children/userValidation')), 'userValidation')
 const invoice = r => require.ensure([], () => r(require('../page/confirmOrder/children/invoice')), 'invoice')
 const chooseAddress = r => require.ensure([], () => r(require('../page/confirmOrder/children/chooseAddress')), 'chooseAddress')
-const addAddress = r => require.ensure([], () => r(require('../page/confirmOrder/children/children/addAddress')), 'addAddress')
-const searchAddress = r => require.ensure([], () => r(require('../page/confirmOrder/children/children/children/searchAddress')), 'searchAddress')
+const addAddress = r => require.ensure([],() => r(require('../page/confirmOrder/children/children/addAddress')),'addAddress')
+const searchAddress = r => require.ensure([],() => r(require('../page/confirmOrder/children/children/children/searchAddress')),'searchAddress')
 const foodDetail = r => require.ensure([], () => r(require('../page/shop/children/foodDetail')), 'foodDetail')
 const shopDetail = r => require.ensure([], () => r(require('../page/shop/children/shopDetail')),'shopDetail')
 const shopSafe = r => require.ensure([],() => r(require('../page/shop/children/children/shopSafe'),'shopSafe'))
@@ -99,19 +99,34 @@ export default [{
   },
    ]
  },
- //订单列表页
- {
-   path:'/order',
-   component:order,
-   children:[{
-       path:'orderDetail',//订单详情页
-       component:orderDetail,
-   }]
- },
+//订单列表页
+{
+  path:'/order',
+  component:order,
+  children:[{
+      path:'orderDetail',//订单详情页
+      component:orderDetail,
+  }]
+},
  //确认订单页
  {
      path:'/confirmOrder',
      component:confirmOrder,
+     children:[{
+         path:'remark',//订单备注
+         component:remark,
+     },{
+         path:'chooseAddress',
+         component:chooseAddress,
+        children:[{
+            path:'addAddress',//添加地址
+            component:addAddress,
+            children:[{
+                path:'searchAddress',//搜索地址
+                component:searchAddress,
+            }]
+        }]
+     }]
  },
     //登录注册页
     {

@@ -1,62 +1,60 @@
  <template>
-    <div class="search_address_page">
-        <section>
-            <head-top head-title="搜索" go-back='true'></head-top>
-            <form class="search_form">
-                <input type="search" name="search" placeholder="请输入小区/写字楼/学校等" v-model="searchValue">
-                <button @click.prevent="searchPlace()">搜索</button>
-            </form>
-            <ul class="address_list" v-if="searchData">
-                <li v-for="(item, index) in searchData" :key="index" @click="choooedAddress(item)">
-                    <h4>{{item.name}}</h4>
-                    <p>{{item.address}}</p>
-                </li>
-            </ul>
-            <div v-else class="empty_tips">
-                <p>找不到地址？</p>
-                <p>尝试输入小区、写字楼或学校名</p>
-                <p>详细地址（如门牌号等）可稍后输入哦</p>
-            </div>
-        </section>
-    </div>
+   <div class="search_address_page">
+       <section>
+           <head-top head-title="搜索" go-back="true"></head-top>
+           <form class="search_form">
+               <input type="search" name="search" placeholder="请输入小区/写字楼/学校等" v-model="searchValue">
+               <button @click.prevent="searchPlace()">搜索</button>
+           </form>
+           <ul class="address_list" v-if="searchData">
+               <li v-for="(item,index) in searchData" :key="index" @click="choosedAddress(item)">
+                   <h4>{{item.name}}</h4>
+                   <p>{{item.address}}</p>
+               </li>
+           </ul>
+           <div v-else class="empty_tips">
+               <p>找不到地址?</p>
+               <p>尝试输入小区、写字楼或学校名</p>
+               <p>详细地址(如门牌号等)可稍后输入哦</p>
+           </div>
+       </section>
+   </div>
 </template>
 
 <script>
-    import headTop from 'src/components/header/head'
-    import {searchNearby} from 'src/service/getData'
-    import {mapMutations} from 'vuex'
-
-    export default {
-      data(){
-            return{
-               	searchValue: null, //输入的搜索内容
-                searchData: null, //搜索的结果
+import headTop from 'src/components/header/head'
+import {searchNearby} from 'src/service/getData'
+import {mapMutations} from 'vuex'
+export default {
+    data(){
+        return{
+           searchValue:'',
+           searchData:'',
+        }
+    },
+    components:{
+        headTop,
+    },
+    methods:{
+        ...mapMutations([
+            'CHOOSE_SEARCH_ADDRESS'
+        ]),
+        //搜索
+        async searchPlace(){
+            if(this.searchValue){
+               this.searchData = await searchNearby(this.searchValue);
             }
         },
-        components: {
-            headTop,
-        },
-        props:[],
-        methods: {
-            ...mapMutations([
-                'CHOOSE_SEARCH_ADDRESS'
-            ]),
-            //搜索
-            async searchPlace(){
-                if (this.searchValue) {
-                    this.searchData = await searchNearby(this.searchValue);
-                }
-            },
-            //选择搜素结果
-            choooedAddress(item){
-                this.CHOOSE_SEARCH_ADDRESS(item);
-                this.$router.go(-1);
-            },
-
+        //选择搜索结果
+        choosedAddress(item){
+            this.CHOOSE_SEARCH_ADDRESS(item);
+            this.$router.go(-1);
         }
+      
     }
+}
 </script>
-  
+
 <style lang="scss" scoped>
     @import 'src/style/mixin';
   
