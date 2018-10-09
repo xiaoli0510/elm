@@ -2,31 +2,32 @@
     <div class="order_page">
         <head-top head-title="订单列表" go-back="true"></head-top>
         <ul class="order_list_ul" v-load-more="loaderMore">
-            <li class="order_list_li">
-                <img src="" class="restaurant_image">
+            <li class="order_list_li" v-for="(item,index) in orderList" :key="index">
+                <img :src="imgBaseUrl + item.restaurant_image_url" class="restaurant_image"/>
                 <section class="order_item_right">
-                    <section>
+                    <section @click="showDetail(item)">
                         <header class="order_item_right_header">
                             <section class="order_header">
                                 <h4>
-                                    <span class="ellipsis"></span>
-                                    <svg fill="#333" class="arrow_right">
+                                    <span class="ellpisis">{{item.restaurant_name}}</span>
+                                     <svg fill="#333" class="arrow_right">
                                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                                     </svg>
                                 </h4>
-                                <p class="order_time"></p>
+                                <p class="order_time">{{item.formatted_created_at}}</p>
                             </section>
                             <p class="order_status">
-                                124
+                                {{item.status_bar.title}}
                             </p>
                         </header>
                         <section class="order_basket">
-                            <p class="order_name ellipsis">123</p>
-                            <p class="order_amount">¥100</p>
+                            <p class="order_name ellipsis">{{item.basket.group[0][0].name}}{{item.basket.group[0].length > 1 ? ' 等' + item.basket.group[0].length + '件商品' : ''}}</p>
+                            <p class="order_amount">¥{{item.total_amount.toFixed(2)}}</p>
                         </section>
                         <div class="order_again">
-                            <compute-time>等待支付</compute-time>
-                            <router-link :to="{}">再来一单</router-link>
+                            <compute-time v-if="item.status_bar.title=='等待支付'" :time="item.time_pass"></compute-time>
+                            <router-link :to="{path:'/shop',query:{geohash,id:item.restaurant_id}}" tag="span" class="buy_again" v-else>再来一单</router-link>
+                            
                         </div>
                     </section>
                 </section>
@@ -34,7 +35,7 @@
         </ul>
         <foot-guide></foot-guide>
         <transition name="loading">
-            <loading></loading>
+            <loading v-show="showLoading"></loading>
         </transition>
         <transition name="router-slid" mode="out-in">
             <router-view></router-view>
@@ -42,27 +43,94 @@
     </div>
 </template>
 <script>
-import {mapState,mapMutations} from 'vuex'
-import headTop from 'src/components/header/head'
-import computeTime from 'src/components/common/computeTime'
-import loading from 'src/components/common/loading'
-import {getImgPath,loadMore} from 'src/components/common/mixin'
-import footGuide from 'src/components/footer/footGuide'
-import {getOrderList} from 'src/service/getData'
-import {imgBaseUrl} from 'src/config/env'
-export default {
-    data(){
-        return {
-
+    import {mapState, mapMutations} from 'vuex'
+    import headTop from 'src/components/header/head'
+    import computeTime from 'src/components/common/computeTime'
+    import loading from 'src/components/common/loading'
+    import {getImgPath} from 'src/components/common/mixin'
+    import footGuide from 'src/components/footer/footGuide'
+    import {getOrderList} from 'src/service/getData'
+    import {loadMore} from 'src/components/common/mixin'
+    import {imgBaseUrl} from 'src/config/env'
+    export default {
+        data(){
+            return{
+                orderList:[],
+                offset:0,
+                preventRepeat:false,//防止重复复获取
+                showLoading:true,//显示加载动画
+                imgBaseUrl,
+            }
+        },
+        mounted(){
+            this.initData();
+        },
+        mixins:[loadMore],
+        components:{
+            headTop,
+            computeTime,
+            footGuide,
+            loading,
+        },
+        computed:{
+            ...mapState([
+                'userInfo','geohash'
+            ])
+        },
+        methods:{
+            ...mapMutations([
+               'SAVE_ORDER'
+            ]),
+              //初始化获取信息
+            async initData(){
+                if (this.userInfo && this.userInfo.user_id) {
+                    console.log('12345')
+                    let res = await getOrderList(this.userInfo.user_id, this.offset);
+                    this.orderList = [...res];
+                    this.hideLoading();
+                }else{
+                    this.hideLoading();
+                }
+            },
+            //加载更多
+            async loaderMore(){
+               if(this.preventRepeat){
+                  return;
+               }
+               this.preventRepeat = ture;
+               this.showLoading = true;
+               this.offset += 10;
+               //获取信息
+               let res = await getOrderList(this.userInfo.user_id,this.offset);
+               this.orderList = [...this.orderList,...res];
+               this.hideLoading();
+               if(res.length < 10){
+                    return;
+               }
+               this.preventRepeat = false;
+            },
+             //显示详情页
+            showDetail(item){
+                this.SAVE_ORDER(item);
+                this.preventRepeat = false;
+                console.log('orderDetail')
+                 this.$router.push('/order/orderDetail');
+            },
+            hideLoading(){
+                this.showLoading = false;
+            }
+        },
+      watch: {
+            userInfo: function (value) {
+                console.log(value, value.user_id, !this.orderList.length);
+                if (value && value.user_id && !this.orderList.length) {
+                    this.initData();
+                }
+            }
         }
-    },
-    components:{
-        headTop,
-        computeTime,
-        footGuide
     }
-}
 </script>
+
 <style lang="scss" scoped>
     @import 'src/style/mixin';
     
@@ -79,13 +147,15 @@ export default {
             background-color: #fff;
             display: flex;
             margin-bottom: 0.5rem;
-            padding: .6rem .6rem 0;
+            padding: .6rem .3rem 0;
             .restaurant_image{
                 @include wh(2rem, 2rem);
-                margin-right: 0.4rem;
+                margin-right: 0.5rem;
             }
             .order_item_right{
                 flex: 5;
+                position: relative;
+                left: -.4rem;
                 .order_item_right_header{
                     border-bottom: 0.025rem solid #f5f5f5;
                     padding-bottom: .3rem;
