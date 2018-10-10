@@ -46,7 +46,6 @@ export default {
 
 	[RECORD_SHOPDETAIL](state, detail) {
 		state.shopDetail = detail;
-		window.localStorage.setItem('shopDetail', JSON.stringify(state.shopDetail));
 	},
 	// 加入购物车
 	[ADD_CART](state, {
@@ -211,6 +210,7 @@ export default {
 	//进入订单详情页前保存该订单信息
 	[SAVE_ORDER](state, orderDetail) {
 		state.orderDetail = orderDetail;
+		sessionStorage.setItem("orderDetail", orderDetail);  //添加到sessionStorage  
 	},
 	//退出登录
 	[OUT_LOGIN](state) {

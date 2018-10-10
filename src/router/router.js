@@ -174,7 +174,7 @@ export default [{
             children: [{
                 path: 'orderDetail', //订单详情页
                 component: orderDetail,
-            }, ]
+            }]
         },
         //vip卡页
         {

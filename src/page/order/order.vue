@@ -84,7 +84,6 @@
               //初始化获取信息
             async initData(){
                 if (this.userInfo && this.userInfo.user_id) {
-                    console.log('12345')
                     let res = await getOrderList(this.userInfo.user_id, this.offset);
                     this.orderList = [...res];
                     this.hideLoading();
@@ -113,7 +112,6 @@
             showDetail(item){
                 this.SAVE_ORDER(item);
                 this.preventRepeat = false;
-                console.log('orderDetail')
                  this.$router.push('/order/orderDetail');
             },
             hideLoading(){
@@ -122,7 +120,6 @@
         },
       watch: {
             userInfo: function (value) {
-                console.log(value, value.user_id, !this.orderList.length);
                 if (value && value.user_id && !this.orderList.length) {
                     this.initData();
                 }

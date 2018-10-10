@@ -37,7 +37,7 @@ export default {
        70%  { transform: scale(1.1) }
        100% { transform: scale(1) }
     }
-    .alet_container{
+    .alert_container{
     	position: fixed;
     	top: 0;
         left: 0;
