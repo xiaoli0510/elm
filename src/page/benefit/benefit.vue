@@ -1,137 +1,84 @@
- <template>
-  <div class="rating_page">
-        <head-top head-title="我的优惠" go-back='true'></head-top>
+<template>
+    <div class="rating_page">
+        <head-top head-title="我的优惠" go-back="true"></head-top>
         <section v-if="!showLoading">
-            <section class="category_title"> 
-                <span :class="{choosed: categoryType === 1}" @click="categoryType = 1">红包</span>
-                <span :class="{choosed: categoryType === 2}" @click="categoryType = 2">商家代金券</span>
+            <section class="category_title">
+                <span>红包</span>
+                <span>商家代金券</span>
             </section>
             <transition name="router-fade">
-                <section v-if="categoryType === 1">
+                <section>
                     <section class="hongbao_container">
                         <header class="hongbao_title">
                             <section class="total_number">
-                                有 <span>{{hongbaoList.length}}</span> 个红包即将到期
+                                有<span>3</span>个红包即将过期
                             </section>
                             <section class="hongbao_description">
                                 <img src="../../images/description.png" height="24" width="24">
-                                <router-link to="/benefit/hbDescription" class="hongbao_detail">红包说明</router-link>
+                                <router-link to="" class="hongbao_detail">红包说明</router-link>
                             </section>
                         </header>
                         <ul class="hongbao_list_ul">
-                            <li class="hongbao_list_li" v-for="item in hongbaoList" :key="item.id">
+                            <li class="hongbao_list_li">
                                 <section class="list_item">
                                     <div class="list_item_left">
-                                        <span>¥</span>
-                                        <span>{{String(item.amount).split('.')[0]}}</span>
-                                        <span>.</span>
-                                        <span>{{String(item.amount).split('.')[1]||0}}</span>
-                                        <p>{{item.description_map.sum_condition}}</p>
+                                        <span>¥12.12</span>
+                                        <p>满20元可用</p>
                                     </div>
                                     <div class="list_item_right">
-                                        <h4>{{item.name}}</h4>
-                                        <p>{{item.description_map.validity_periods}}</p>
-                                        <p>{{item.description_map.phone}}</p>
+                                        <h4>红包名称</h4>
+                                        <p>11.11-11.20</p>
+                                        <p>可用手机号13524268216</p>
                                     </div>
-                                    <div class="time_left">{{item.description_map.validity_delta}}</div>
+                                    <div class="time_left">剩3日</div>
                                 </section>
-                                <footer class="list_item_footer" v-if="item.limit_map">
-                                    <p>{{item.limit_map.restaurant_flavor_ids}}</p>
-                                </footer>
+                                <footer class="list"></footer>
                             </li>
                         </ul>
                     </section>
-                    <router-link to="/benefit/hbHistory" class="history_hongbao">
+                    <router-link to="" class="history_hongbao">
                         <span class="check_history">查看历史红包</span>
                         <svg class="history_right">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                         </svg>
                     </router-link>
                     <footer class="hongbao_footer">
-                        <router-link to="/benefit/exchange" class="hongbao_style" style="border-right: 1px solid #f5f5f5">
+                        <router-link to="" class="hongbao_style" style="border-right:1px solid #f5f5f5">
                             兑换红包
                         </router-link>
-                        <router-link to="/benefit/commend" class="hongbao_style">
+                        <router-link to="" class="hongbao_style">
                             推荐有奖
                         </router-link>
                     </footer>
                 </section>
             </transition>
             <transition name="router-fade">
-                <section v-if="categoryType === 2" class="voucher_container">
+                <section class="voucher_container">
                     <section class="hongbao_description voucher_header">
                         <img src="../../images/description.png" height="24" width="24">
-                        <router-link to="/benefit/coupon" class="hongbao_detail">商家代金券说明</router-link>
+                        <router-link to="" class="hongbao_detail">商家代金券说明</router-link>
                     </section>
                     <section class="unable_use">
                         <img src="../../images/voucher.png" height="170" width="300">
-                        <p>无法使用代金券</p>
-                        <p>非客户端或客户端版本过低</p>
-                        <router-link to="/download" class="download_app">
-                        下载或升级客户端
-                        </router-link>
                     </section>
                 </section>
             </transition>
         </section>
-        <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
-        <loading v-show="showLoading"></loading>
-        <transition name="router-slid" mode="out-in">
-            <router-view></router-view>
-        </transition>
     </div>
 </template>
-
 <script>
-    import headTop from 'src/components/header/head'
-    import {mapState, mapMutations} from 'vuex'
-    import {getHongbaoNum} from 'src/service/getData'
-    import alertTip from 'src/components/common/alertTip'
-    import loading from 'src/components/common/loading'
-
+   import headTop from 'src/components/header/head'
     export default {
-      data(){
+        data(){
             return{
-                showAlert: false, //弹出框
-                alertText: null, //弹出框文字
-                showLoading: true, //加载动画
-                hongbaoList: null, //红包列表
-                categoryType: 1, //红包与商家代金券切换
-
+              showLoading:false, 
             }
         },
-        mounted(){
-            this.initData();
-        },
-        components: {
-            headTop,
-            alertTip,
-            loading,
-        },
-        computed: {
-            ...mapState([
-                'userInfo',
-            ]),
-        },
-        methods: {
-            ...mapMutations([
-                'CLEAR_CART'
-            ]),
-            async initData(){
-                if (this.userInfo) {
-                    this.hongbaoList = await getHongbaoNum(this.userInfo.user_id);
-                    this.showLoading = false;
-                }
-            }
-        },
-        watch: {
-            userInfo: function (value){
-                this.initData();
-            }
+        components:{
+            headTop
         }
     }
 </script>
-  
 <style lang="scss" scoped>
     @import 'src/style/mixin';
   
@@ -312,3 +259,4 @@
         opacity: 0;
     }
 </style>
+

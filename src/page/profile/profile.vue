@@ -35,11 +35,11 @@
                        <span class="info-data-bottom">我的余额</span>
                    </router-link>
                    <router-link to="/benefit" tag="li" class="info-data-link">
-                       <span class="info-data-top"><b>{{count}}个</b></span>
+                       <span class="info-data-top"><b>{{count}}</b>个</span>
                        <span class="info-data-bottom">我的优惠</span>
                    </router-link>
                    <router-link to="/points" tag="li" class="info-data-link">
-                       <span class="info-data-top"><b>{{pointNumber}}</b></span>
+                       <span class="info-data-top"><b>{{pointNumber}}</b>分</span>
                        <span class="info-data-bottom">我的积分</span>
                    </router-link>
                </ul>
@@ -142,6 +142,7 @@
     import footGuide from 'src/components/footer/footGuide'
     import {mapState,mapMutations} from 'vuex'
     import {imgBaseUrl} from 'src/config/env'
+   import {getImgPath} from 'src/components/common/mixin'
     export default {
         data() {
             return {
@@ -161,22 +162,40 @@
         mounted(){
             this.initData();
         },
+        mixins:[getImgPath],
         methods:{
+            ...mapMutations([
+                'SAVE_AVANDER'
+            ]),
             initData(){
-              if(this.userInfo){
-                 this.avatar = this.userInfo.avatar;
-                 this.username = this.userInfo.username;
-                 this.mobile = this.userInfo.mobile||'暂无绑定手机号';
-                 this.balance = this.userInfo.balance;
-                 this.count = this.userInfo.gift_amount;
-                 this.pointNumber = this.userInfo.point;
-              }
+                if(this.userInfo && this.userInfo.user_id){
+                   this.avatar = this.userInfo.avatar;
+                   this.username = this.userInfo.username;
+                   this.mobile = this.userInfo.mobile||'暂无绑定手机号';
+                   this.balance = this.userInfo.balance;
+                   this.coutn = this.userInfo.gift_amount;
+                   this.pointNumber = this.userInfo.point;
+                }else{
+                    this.username = '登录/注册';
+                    this.mobile = '暂无绑定手机号';
+                }
             }
         },
          computed:{
             ...mapState([
                 'userInfo',
-            ])
+            ]),
+            //后台会返回两种头像地址格式 分别处理
+            imgpath:function(){
+                let path;
+                if(this.avatar.indexOf('/')!==-1){
+                   path=imgBaseUrl + this.avatar;
+                }else{
+                  path = this.getImgPath(this.avatar);
+                }
+                this.SAVE_AVANDER(path);
+                return path;
+            }
         },
         watch:{
             userInfo:function(value){

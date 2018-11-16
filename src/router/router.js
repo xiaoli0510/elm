@@ -27,13 +27,13 @@ const foodDetail = r => require.ensure([], () => r(require('../page/shop/childre
 const shopDetail = r => require.ensure([], () => r(require('../page/shop/children/shopDetail')), 'shopDetail')
 const shopSafe = r => require.ensure([], () => r(require('../page/shop/children/children/shopSafe')), 'shopSafe')
 const info = r => require.ensure([], () => r(require('../page/profile/children/info')),'info')
-const setusername = r => require.ensure([], () => r(require('../page/profile/children/children/setusername')), 'setusername')
-const address = r => require.ensure([], () => r(require('../page/profile/children/children/address')), 'address')
-const add = r => require.ensure([], () => r(require('../page/profile/children/children/children/add')), 'add')
-const addDetail = r => require.ensure([], () => r(require('../page/profile/children/children/children/children/addDetail')), 'addDetail')
-const balance = r => require.ensure([], () => r(require('../page/balance/balance')), 'balance')
-const balanceDetail = r => require.ensure([], () => r(require('../page/balance/children/detail')), 'balanceDetail')
-const benefit = r => require.ensure([], () => r(require('../page/benefit/benefit')), 'benefit')
+const setusername = r => require.ensure([], () => r(require('../page/profile/children/children/setusername')),'setusername')
+const address = r => require.ensure([], ()=> r(require('../page/profile/children/children/address')),'address')
+const add = r => require.ensure([], () => r(require('../page/profile/children/children/children/add')),'add')
+const addDetail = r => require.ensure([], () => r(require('../page/profile/children/children/children/children/addDetail')),'addDetail')
+const balance = r => require.ensure([], () => r(require('../page/balance/balance')),'balance');
+const balanceDetail = r => require.ensure([], () => r(require('../page/balance/children/detail')),'balanceDetail')
+const benefit = r => require.ensure([], () => r(require('../page/benefit/benefit')),'benefit')
 const coupon = r => require.ensure([], () => r(require('../page/benefit/children/coupon')), 'coupon')
 const hbDescription = r => require.ensure([], () => r(require('../page/benefit/children/hbDescription')), 'hbDescription')
 const hbHistory = r => require.ensure([], () => r(require('../page/benefit/children/hbHistory')), 'hbHistory')
@@ -141,6 +141,21 @@ export default [{
            children:[{
                path:'info',//个人信息详情页
                component:info,
+               children:[{
+                   path:'setusername',
+                   component:setusername,
+               },{
+                   path:'address',
+                   component:address,
+                   children:[{
+                       path:'add',
+                       component:add,
+                       children:[{
+                           path:'addDetail',
+                           component:addDetail
+                       }]
+                   }]
+               }]
                
            }]
        },
@@ -194,33 +209,17 @@ export default [{
         },
         //余额
         {
-            path: 'balance',
-            component: balance,
-            children: [{
-                path: 'detail', //余额说明
-                component: balanceDetail,
-            }, ]
+          path:'balance',
+          component:balance,
+          children:[{
+              path:'detail',//余额说明
+              component:balanceDetail,
+          }]
         },
-        //我的优惠页
+        //我的优惠券
         {
-            path: 'benefit',
-            component: benefit,
-            children: [{
-                path: 'coupon', //代金券说明
-                component: coupon,
-            }, {
-                path: 'hbDescription', //红包说明
-                component: hbDescription,
-            }, {
-                path: 'hbHistory', //历史红包
-                component: hbHistory,
-            }, {
-                path: 'exchange', //兑换红包
-                component: exchange,
-            }, {
-                path: 'commend', //推荐有奖
-                component: commend,
-            },]
+          path:'benefit',
+          component:benefit,
         },
         //我的积分页
         {

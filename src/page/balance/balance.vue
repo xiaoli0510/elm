@@ -1,13 +1,13 @@
- <template>
-  <div class="page">
-        <head-top head-title="我的余额" go-back='true'></head-top>
+<template>
+    <div class="page">
+        <head-top head-title="我的余额" go-back="true"></head-top>
         <section class="content_container">
             <section class="content">
                 <header class="content_header">
                     <span class="content_title_style">当前余额</span>
                     <section class="contetn_description">
-                        <img src="../../images/description.png" height="24" width="24">
-                        <router-link to="/balance/detail" class="content_title_style">余额说明</router-link>
+                        <img src="../../images/description.png"  height="24" width="24" alt="">
+                        <router-link to="/balance/detail">余额说明</router-link>
                     </section>
                 </header>
                 <p class="content_num">
@@ -22,40 +22,28 @@
             <img src="../../images/no-log.png">
             <p>暂无明细记录</p>
         </div>
-        <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
+        <alert-tip v-if="showAlert" @closeTip="showAlert=false" :alertText="alertText" ></alert-tip>
         <transition name="router-slid" mode="out-in">
             <router-view></router-view>
         </transition>
     </div>
 </template>
-
 <script>
-    import headTop from 'src/components/header/head'
-    import alertTip from 'src/components/common/alertTip'
-    
+   import headTop from 'src/components/header/head'
+   import alertTip from 'src/components/common/alertTip'
     export default {
-      data(){
+        data(){
             return{
-                showAlert: false,
-                alertText: null,
+                showAlert:false,
+                alertText:'',
             }
         },
-        mounted(){
-          
-        },
-        components: {
+        components:{
             headTop,
             alertTip,
-        },
-        computed: {
-           
-        },
-        methods: {
-            
         }
     }
 </script>
-  
 <style lang="scss" scoped>
     @import 'src/style/mixin';
   
