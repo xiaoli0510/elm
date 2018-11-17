@@ -10,7 +10,7 @@ const profile = r => require.ensure([], () => r(require('../page/profile/profile
 const forget = r => require.ensure([], () => r(require('../page/forget/forget')), 'forget')
 const order = r => require.ensure([], () => r(require('../page/order/order')), 'order')
 const orderDetail = r => require.ensure([], () => r(require('../page/order/children/orderDetail')), 'orderDetail')
-const vipcard = r => require.ensure([], () => r(require('../page/vipcard/vipcard')), 'vipcard')
+const vipcard = r => require.ensure([], () => r(require('../page/vipcard/vipcard')),'vipcard')
 const invoiceRecord = r => require.ensure([], () => r(require('../page/vipcard/children/invoiceRecord')), 'invoiceRecord')
 const useCart = r => require.ensure([], () => r(require('../page/vipcard/children/useCart')), 'useCart')
 const vipDescription = r => require.ensure([], () => r(require('../page/vipcard/children/vipDescription')), 'vipDescription')
@@ -34,17 +34,17 @@ const addDetail = r => require.ensure([], () => r(require('../page/profile/child
 const balance = r => require.ensure([], () => r(require('../page/balance/balance')),'balance');
 const balanceDetail = r => require.ensure([], () => r(require('../page/balance/children/detail')),'balanceDetail')
 const benefit = r => require.ensure([], () => r(require('../page/benefit/benefit')),'benefit')
-const coupon = r => require.ensure([], () => r(require('../page/benefit/children/coupon')), 'coupon')
-const hbDescription = r => require.ensure([], () => r(require('../page/benefit/children/hbDescription')), 'hbDescription')
+const coupon = r => require.ensure([], () => r(require('../page/benefit/children/coupon')),'coupon')
+const hbDescription = r => require.ensure([], () => r(require('../page/benefit/children/hbDescription')),'hbDescription')
 const hbHistory = r => require.ensure([], () => r(require('../page/benefit/children/hbHistory')), 'hbHistory')
-const exchange = r => require.ensure([], () => r(require('../page/benefit/children/exchange')), 'exchange')
-const commend = r => require.ensure([], () => r(require('../page/benefit/children/commend')), 'commend')
-const points = r => require.ensure([], () => r(require('../page/points/points')), 'points')
-const pointsDetail = r => require.ensure([], () => r(require('../page/points/children/detail')), 'pointsDetail')
+const exchange = r => require.ensure([], () => r(require('../page/benefit/children/exchange')),'exchange')
+const commend = r => require.ensure([], () => r(require('../page/benefit/children/commend')),'commend')
+const points = r => require.ensure([] , () => r(require('../page/points/points')),'points')
+const pointsDetail = r => require.ensure([] , () => r(require('../page/points/children/detail')),'pointsDetail')
 const service = r => require.ensure([], () => r(require('../page/service/service')), 'service')
 const questionDetail = r => require.ensure([], () => r(require('../page/service/children/questionDetail')), 'questionDetail')
 const find = r => require.ensure([], () => r(require('../page/find/find')), 'find')
-const download = r => require.ensure([], () => r(require('../page/download/download')), 'download')
+const download = r => require.ensure([], () => r(require('../page/download/download')),'download')
 
 
 
@@ -173,20 +173,10 @@ export default [{
                 component: orderDetail,
             }]
         },
-        //vip卡页
+        //vip会员卡
         {
-            path: '/vipcard',
-            component: vipcard,
-            children: [{
-                path: 'invoiceRecord', //开发票
-                component: invoiceRecord,
-            }, {
-                path: 'useCart', //购买会员卡
-                component: useCart,
-            }, {
-                path: 'vipDescription', //会员说明
-                component: vipDescription,
-            },]
+          path:'/vipcard',
+          component:vipcard,  
         },
         //发现页
         {
@@ -220,15 +210,43 @@ export default [{
         {
           path:'benefit',
           component:benefit,
+          children:[{
+              path:'hbDescription',//红包说明
+              component:hbDescription,
+          },
+          {
+            path:'coupon',//代金券说明
+            component:coupon,
+          },
+          {
+            path:'exchange',//兑换红包
+            component:exchange,
+          }
+          ,
+          {
+            path:'commend',//兑换红包
+            component:commend,
+          }
+          ]
         },
         //我的积分页
         {
             path: 'points',
             component: points,
-            children: [{
-                path: 'detail', //积分说明
-                component: pointsDetail,
-            }, ]
+            children:[{
+                path:'detail',
+                component:pointsDetail
+            }]
         },
+        //我的积分页
+        {
+          path:'points',
+          component:points,
+        },
+        //下载
+        {
+            path:'download',
+            component:download,
+        }
     ]
 }]

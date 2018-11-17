@@ -1,12 +1,12 @@
- <template>
-  <div class="page">
-        <head-top head-title="兑换红包" go-back='true'></head-top>
+<template>
+    <div class="page">
+        <head-top head-title="兑换红包" go-back="true"></head-top>
         <form class="exchange_code">
             <input type="text" placeholder="请输入兑换码" v-model="exchangeCode" class="exchange_input">
             <section class="input_container captcha_code_container">
-                <input type="text" placeholder="验证码" maxlength="4" v-model="codeNumber">
+                 <input type="text" placeholder="验证码" maxlength="4" v-model="codeNumber">
                 <div class="img_change_img">
-                    <img v-show="captchaCodeImg" :src="captchaCodeImg">
+                    <img :src="captchaCodeImg" v-show="captchaCodeImg">
                     <div class="change_img" @click="getCaptchaCode">
                         <p>看不清</p>
                         <p>换一张</p>
@@ -14,65 +14,64 @@
                 </div>
             </section>
         </form>
-        <div class="determine" @click="exchange" :class="{active: status}">兑换</div>
-        <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
+        <div class="determine" :class="{active:status}" @click="exchange">兑换</div>
+        <alert-tip v-if="showAlert" @closeTip="showAlert=false" :alertText="alertText" ></alert-tip>
+
     </div>
 </template>
-
 <script>
     import headTop from 'src/components/header/head'
-    import {mapState} from 'vuex'
-    import {getcaptchas, exChangeHongbao} from 'src/service/getData'
+    import {getcaptchas,exChangeHongbao} from 'src/service/getData'
     import alertTip from 'src/components/common/alertTip'
-
+    import {mapState} from 'vuex'
     export default {
-      data(){
+        data(){
             return{
-                showAlert: false,
-                alertText: null,
-                exchangeCode: null,
-                codeNumber: '',
-                captchaCodeImg: null,
+                exchangeCode:'',//兑换码
+                codeNumber:'',
+                captchaCodeImg:'',//验证码地址
+                showAlert:false,
+                alertText:'',
             }
         },
-        mounted(){
-            this.getCaptchaCode();
-        },
-        components: {
+        mounted:function(){
+              this.getCaptchaCode();
+         },
+        components:{
             headTop,
-            alertTip,
+            alertTip
         },
-        computed: {
-            ...mapState([
-                'userInfo',
-            ]),
-            status: function (){
-                let status = (/^\d+$/gi.test(this.exchangeCode)) && (/^\w{4}$/gi.test(this.codeNumber))
-                return status;
-            }
+        computed:{
+          ...mapState([
+              'userInfo'
+          ]),
+          status:function(){
+              let status = (/^\d+$/gi.test(this.exchangeCode)) && (/^\w{4}$/gi.test(this.codeNumber))
+              return status;
+          }
         },
-        methods: {
-            //线上环境采用固定的图片，编译环境获取真实的验证码
+        methods:{
+            //获取验证码
             async getCaptchaCode(){
                 let res = await getcaptchas();
                 this.captchaCodeImg = res.code;
             },
             //兑换红包
             async exchange(){
-                if (this.status) {
-                    let res = await exChangeHongbao(this.userInfo.user_id, this.exchangeCode, this.codeNumber);
-                    //不成功则弹出提示框
-                    if (res.message) {
-                        this.getCaptchaCode();
-                        this.showAlert = true;
-                        this.alertText = res.message;
-                    }
+                if(this.status){
+                   let res = await exChangeHongbao(this.userInfo.user_id,this.exchangeCode,this.codeNumber);
+                   //不成功则弹出提示框
+                   if(res.message){
+                      this.getCaptchaCode();
+                      this.showAlert=true;
+                      this.alertText=res.message;
+                   }
                 }
             }
         }
     }
 </script>
-  
+
 <style lang="scss" scoped>
     @import 'src/style/mixin';
   

@@ -1,6 +1,6 @@
- <template>
-  <div class="page">
-        <head-top head-title="推荐有奖" go-back='true'></head-top>
+<template>
+    <div class="page">
+        <head-top head-title="推荐有奖" go-back="true"></head-top>
         <section class="activity_banner">
             <img src="../../../images/activity.png">
         </section>
@@ -10,11 +10,11 @@
                 <p>邀请微信好友</p>
             </div>
             <div class="invite_firend_style">
-                <img src="../../../images/qq.png" @click="fenxiang">
+                <img src="../../../images/qq.png"  @click="fenxiang">
                 <p>邀请QQ好友</p>
             </div>
-            <div class="invite_firend_style">
-                <img src="../../../images/fenxiang.png" @click="fenxiang">
+             <div class="invite_firend_style">
+                <img src="../../../images/fenxiang.png"  @click="fenxiang">
                 <p>面对面邀请</p>
             </div>
         </section>
@@ -30,47 +30,35 @@
         </section>
         <p class="income_detail">-收益明细-</p>
         <section class="incom_tips">
-            <img src="../../../images/qianbao.png">
+            <img src="../../../images/qianbao.png" alt="">
             <p>还不赶紧去邀请好友</p>
         </section>
-        <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
+        <alert-tip v-if="showAlert" @closeTip="showAlert=false" :alertText="alerText"></alert-tip>
     </div>
 </template>
-
 <script>
-    import headTop from 'src/components/header/head'
-    import {mapState} from 'vuex'
-    import {payRequest} from 'src/service/getData'
-    import alertTip from 'src/components/common/alertTip'
-
+   import headTop from 'src/components/header/head'
+   import alertTip from 'src/components/common/alertTip'
     export default {
-      data(){
+        data(){
             return{
-                showAlert: false,
-                alertText: null,
+                showAlert:false,
+                alertText:'',
             }
         },
-        mounted(){
-            
-        },
-        components: {
+        components:{
             headTop,
-            alertTip,
+            alertTip
         },
-        computed: {
-            ...mapState([
-                'userInfo',
-            ]),
-        },
-        methods: {
+        methods:{
             fenxiang(){
                 this.showAlert = true;
-                this.alertText = '请在饿了么APP中打开';
+                this.alerText = '请在饿了么APP中打开';
             }
         }
     }
 </script>
-  
+
 <style lang="scss" scoped>
     @import 'src/style/mixin';
   
