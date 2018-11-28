@@ -1,7 +1,7 @@
- <template>
-  <div class="page_container">
-        <head-top head-title="我的优惠" go-back='true'></head-top>
-        <div class="markdown">
+<template>
+    <div class="page_container">
+         <head-top head-title="我的优惠" go-back="true"></head-top>
+         <div class="markdown">
             <blockquote>
                 <p>尊敬的用户，随着会员体系逐渐完善，自2016年10月10日起，饿了么会员权益将做如下优化：
                 购卡后31天内，累积享有30单减免配送费服务（每日最多3单，每单最高减免4元）。
@@ -35,37 +35,19 @@
         </div>
     </div>
 </template>
-
 <script>
-    import headTop from 'src/components/header/head'
-    import {mapState, mapMutations} from 'vuex'
-    import {getOrderList} from 'src/service/getData'
+import headTop from 'src/components/header/head'
+export default {
+    data(){
+        return{
 
-    export default {
-      data(){
-            return{
-    
-            }
-        },
-        mounted(){
-
-        },
-        computed: {
-            ...mapState([
-                'userInfo', 
-            ]),
-        },
-        components: {
-            headTop,
-        },
-        methods: {
-            ...mapMutations([
-                'SAVE_AVANDER'
-            ]),
         }
+    },
+    components:{
+        headTop
     }
+}
 </script>
-  
 <style lang="scss" scoped>
     @import 'src/style/mixin';
   
@@ -100,3 +82,5 @@
         }
     }
 </style>
+
+

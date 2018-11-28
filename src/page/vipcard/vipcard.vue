@@ -2,9 +2,9 @@
     <div class="rating_page">
         <head-top head-title="会员中心" go-back="true"></head-top>
         <section v-if="userInfo">
-            <p class="buy_for">为账号<span>123456</span>购买会员</p>
+            <p class="buy_for">为账号<span>{{userInfo.username}}</span>购买会员</p>
             <section class="vip_prerogative">
-                <router-link to="" class="header_style">
+                <router-link to="/vipcard/vipDescription" class="header_style">
                     <span class="header_left">会员特权</span>
                     <section class="header_right">
                         <span>会员说明</span>
@@ -24,6 +24,7 @@
                     </div>
                 </section>
             </section>
+            <!-- 开通会员 -->
             <section class="apply_vip">
                 <header class="header_style">
                     <span class="header_left">开通会员</span>
@@ -33,23 +34,25 @@
                         <span>1个月</span>
                         <span>¥20</span>
                     </div>
-                    <div class="apply_vip_buy_right">购买</div>
+                    <div class="apply_vip_buy_right" @click="buyCart">购买</div>
                 </section>
             </section>
-            <router-link to="" class="header_style common_style"> 
+            <!-- 兑换会员 -->
+            <router-link to="" class="header_style common_style">
                 <span class="header_left">兑换会员</span>
                 <section class="header_right">
                     <span>使用卡号卡密</span>
-                    <svg fill="#ccc">
+                     <svg fill="#ccc">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                     </svg> 
                 </section>
             </router-link>
+            <!-- 购买记录 -->
             <router-link to="" class="header_style common_style">
                 <span class="header_left">购买记录</span>
                 <section class="header_right">
                     <span>开发票</span>
-                    <svg fill="#ccc">
+                     <svg fill="#ccc">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                     </svg> 
                 </section>
@@ -76,6 +79,17 @@
             ...mapState([
                 'userInfo',
             ])
+        },
+        methods:{
+            ...mapMutations([
+                'ORDER_SUCCESS','BUY_CART'
+            ]),
+            buyCart(){
+                this.ORDER_SUCCESS({order_id:'3032644056118755417'});
+                this.BUY_CART(20);
+                this.$router.push('/confirmOrder/payment');
+            }
+
         }
     }
 </script>

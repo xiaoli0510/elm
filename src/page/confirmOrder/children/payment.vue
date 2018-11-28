@@ -1,137 +1,136 @@
- <template>
-   <div class="rating_page">
-       <head-top head-title="在线支付" go-back="true"></head-top>
-       <section class="show_time_amount">
-           <section>
-               <header class="time_last">支付剩余时间</header>
-               <p class="time">{{remaining}}</p>
-               <footer class="order_detail">
-                   <span>详情</span>
-                   <span>¥100</span>
-               </footer>
-           </section>
-       </section>
-       <div class="pay_way">选择支付方式</div>
-       <section class="pay_way_list">
-           <section class="pay_item">
-               <div class="pay_icon_container">
-                   <div class="zhifubao"></div>
-                   <span>支付宝</span>
-               </div>
-                <svg class="choose_icon" @click="payWay = 1" :class="{choosed_way:payWay ==1}">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
-                </svg>
-           </section>
-           <section class="pay_item">
-               <div class="pay_icon_container">
-                    <svg>
+<template>
+    <div class="rating_page">
+      <head-top head-title="在线支付" go-back="true"></head-top>
+      <section class="show_time_amount">
+          <section>
+              <header class="time_last">支付剩余时间</header>
+              <p class="time">{{remaining}}</p>
+              <footer class="order_detail" v-if="payDetail.payDetail">
+                  <span>详情</span>
+                  <span>¥{{cartPrice&&cartPrice.toFixed(2)||payDetail.resultData.orderInfo.orderAmount&&(payDetail.resultData.orderInfo.orderAmount/100).toFixed(2)}}</span>
+              </footer>
+          </section>
+      </section>
+      <div class="pay_way">选择支付方式</div>
+      <section class="pay_way_list">
+          <section class="pay_item">
+              <div class="pay_icon_container">
+                  <div class="zhifubao"></div>
+                  <span>支付宝</span>
+              </div>
+              <svg class="choose_icon" :class="{choosed_way:payWay==1}" @click="payWay= 1">
+                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
+              </svg>
+          </section>
+          <section class="pay_item">
+              <div class="pay_icon_container">
+                  <svg>
                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#weixin"></use>
                     </svg>
                     <span>微信</span>
-               </div>
-               <svg class="choose_icon" @click="payWay = 2" :class="{choosed_way:payWay == 2}">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
-                </svg>
-           </section>
-       </section>
-       <p class="determine" @click="confrimPay">确认支付</p>
-       <alert-tip v-if="showAlert" @closeTip="closeTipFun" :alertText="alertText"></alert-tip>
-
-   </div>
+              </div>
+              <svg class="choose_icon" :class="{choosed_way:payWay==2}" @click="payWay= 2">
+                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
+              </svg>
+          </section>
+      </section>
+      <p class="determine" @click="confirmPay">确认支付</p>
+      <alert-tip v-show="showAlert" @closeTip="closeTipFun" :alertText="alertText"></alert-tip>
+      
+    </div>
 </template>
-
 <script>
-    import headTop from 'src/components/header/head'
-    import alertTip from 'src/components/common/alertTip'
-    import {payRequest} from 'src/service/getData'
-    import {mapState,mapMutations} from 'vuex'
-    export default {
-        data(){
-            return{
-               showAlert:false,
-               alertText:'',
-               countNum:900,//倒计时15分钟
-               payWay:1,//付款方式
-               gotoOrders:false,//去付款
-               payDetail:false,//付款信息详情
-            }
-        },
-        components:{
-            headTop,
-            alertTip,
-        },
-        created:function(){
-            this.initData();
-             this.remainingTime();
-            //清除购物车中当前商铺的信息
-            if(this.shopid){
-                this.CLEAR_CART(this.shopid);
-            }
-        },
-        beforeDestroy(){
-           clearInterval(this.timer);
-        },
-        computed:{
-            ...mapState([
-                 'orderMessage','userInfo','shopid','cartPrice'
-            ]),
-            //时间转换
-            remaining:function(){
-                let minute = parseInt(this.countNum/60);
-                if(minute <10 ){
-                  minute = '0' +minute;
-                }
-                let second = parseInt(this.countNum%60);
-                if(second <10 ){
-                  second = '0' +second;
-                }
-                return '00:'+minute +':' +second;
-            }
-        },
-        methods:{
-            ...mapMutations([
-                'CONFIRM_INVOICE','CLEAR_CART'
-            ]),
-            //初始化信息
-            async initData(){ 
-                if(this.orderMessage&&this.userInfo){
-                   this.payDetail = await payRequest(this.orderMessage.order_id,this.userInfo.user_id);
-                }
-                if(this.payDetail.message){
-                    this.showAlert = true;
-                    this.alertText = this.payDetail.message;
-                    return;
-                }
-            },
-            //倒计时
-            remainingTime(){
-                clearInterval(this.timer);
-                this.timer = setInterval(() => {
-                   this.countNum --;
-                   if(this.countNum ==0){
-                      clearInterval(this.timer);
-                      this.showAlert = true;
-                      this.alertText = '支付超时';
-                   }
-                },1000);
-            },
-            //确认付款
-            confrimPay(){
+import headTop from 'src/components/header/head'
+import alertTip from 'src/components/common/alertTip'
+import {mapState,mapMutations} from 'vuex'
+import {payRequest} from 'src/service/getData'
+export default {
+    data(){
+        return{
+          showAlert:false,
+          alertText:'',
+          payWay:1,//付款方式
+          gotoOrders:false,//去付款
+          countNum:900,//倒计时15分钟
+          payDetail:false,//付款信息详情
+        }
+    },
+    components:{
+        headTop,
+        alertTip,
+    },
+    created:function(){
+       this.initData();
+       //清除购物车中当前商铺的信息
+       if(this.shopid){
+             this.CLEAR_CART(this.shopid);
+       }
+    },
+    mounted:function(){
+        this.remainingTime();
+    },
+    beforeDestroy(){
+       clearInterval(this.timer);
+    },
+    methods:{
+        ...mapMutations([
+            'CLEAR_CART'
+        ]),
+        //初始化信息
+        async initData(){
+            if(this.orderMessage&&this.orderMessage.order_id&&this.userInfo.user_id){
+              this.payDetail = await payRequest(this.orderMessage.order_id,this.userInfo.user_id);
+             }
+            if(this.payDetail.message){
                 this.showAlert = true;
-                this.alertText = '当前环境无法支付，请打开官方APP进行付款';
-                this.gotoOrders = true;
-            },
-            //关闭提示框，跳转到订单列表页
-            closeTipFun(){
-                this.showAlert = false;
-                if(this.gotoOrders){
-                   this.$router.push('/order');
-                }
+                this.alertText = this.payDetail.message;
+                return;
             }
+        },
+        //关闭提示框
+        closeTipFun(){
+          this.showAlert = false;
+          if(this.gotoOrders){
+            this.$router.push('/order');
+          }
+        },
+        //确认支付
+        confirmPay(){
+           this.showAlert = true;
+           this.alertText="当前环境无法支付，请打开官方APP进行付款";
+           this.gotoOrders = true;
+
+        },
+        remainingTime(){//倒计时
+            clearInterval(this.timer);
+            this.timer = setInterval(()=>{
+                this.countNum--;
+                if(this.countNum == 0){
+                   this.showAlert = true;
+                   this.alertText = '支付超时';
+                }
+            },1000);
+        }
+    },
+    computed:{
+        ...mapState([
+            'orderMessage','userInfo','shopid','cartPrice'
+        ]),
+        //时间转换
+        remaining:function(){
+            let minute = parseInt(this.countNum/60);
+            if(minute < 10){
+            minute = '0' +minute;
+            }
+            let second =  parseInt(this.countNum%60);
+            if(second < 10){
+            second = '0' + second;
+            }
+            return "00:"+minute+":"+second;
         }
     }
+}
 </script>
-
 <style lang="scss" scoped>
     @import 'src/style/mixin';
   
@@ -223,3 +222,4 @@
     }
     
 </style>
+

@@ -4,7 +4,7 @@
        <section>
            <section class="profile-number">
                <router-link :to="userInfo&&userInfo.user_id?'/profile/info':'/login'" class="profile-link">
-                   <img :src="imgBaseUrl+userInfo.avatar" class="privateImage" v-if="userInfo&&userInfo.user_id">
+                   <img src="../../images/user.png" class="privateImage" v-if="userInfo&&userInfo.user_id">
                    <span class="privateImage" v-else>
                        <svg class="privateImage-svg">
                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#avatar-default"></use>
