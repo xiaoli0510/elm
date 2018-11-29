@@ -38,7 +38,7 @@
                 </section>
             </section>
             <!-- 兑换会员 -->
-            <router-link to="" class="header_style common_style">
+            <router-link to="/vipcard/useCart" class="header_style common_style">
                 <span class="header_left">兑换会员</span>
                 <section class="header_right">
                     <span>使用卡号卡密</span>
@@ -48,7 +48,7 @@
                 </section>
             </router-link>
             <!-- 购买记录 -->
-            <router-link to="" class="header_style common_style">
+            <router-link to="/vipcard/invoiceRecord" class="header_style common_style">
                 <span class="header_left">购买记录</span>
                 <section class="header_right">
                     <span>开发票</span>
