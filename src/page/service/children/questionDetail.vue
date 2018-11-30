@@ -1,53 +1,46 @@
- <template>
-  <div class="detail_page">
-        <head-top :head-title="question.title" go-back='true'></head-top>
-        <section id="scroll_section" class="scroll_container">
-            <section v-html="markdownText" class="markdown"></section>
-        </section>
+<template>
+    <div class="detail_page">
+       <head-top head-title="问题标题" go-back="true"></head-top>
+       <section id="scroll_section" class="scroll_container">
+           <section class="markdown" v-html="markdownText"></section>
+       </section>
     </div>
 </template>
-
 <script>
     import headTop from 'src/components/header/head'
-    import {mapState, mapMutations} from 'vuex'
     import showdown from 'showdown'
+    import {mapState,mapMutations} from 'vuex'
     import BScroll from 'better-scroll'
-
     export default {
-      data(){
-            return{
-    			
+        data(){
+            return {
+                
             }
         },
-        components: {
+        components:{
             headTop,
         },
-        mounted(){
+        mounted:function(){
             this.$nextTick(() => {
-                new BScroll('#scroll_section', {  
-                    deceleration: 0.001,
-                    bounce: true,
-                    swipeTime: 1800,
-                    click: true,
-                }); 
+                new BScroll('#scroll_section',{
+                    deceleration:0.001,
+                    bounce:true,
+                    swiperTime:1800,
+                    click:true,
+                })
             })
         },
-        computed: {
-        	...mapState([
-	            'question', 
-	        ]),
-	        markdownText: function (){
-                //转换markDown格式
-	        	let converter = new showdown.Converter();  
-	            return converter.makeHtml(this.question.detail);  
-	        }
-        },
-        methods: {
-            
+        computed:{
+            ...mapState([
+                'question',
+            ]),
+            markdownText:function(){
+                let converter = new showdown.Converter();
+                return converter.makeHtml(this.question.detail);
+            }
         }
     }
 </script>
-  
 <style lang="scss" scoped>
     @import 'src/style/mixin';
   
@@ -81,3 +74,4 @@
     }
 
 </style>
+

@@ -18,8 +18,8 @@
         <section class="hot_questions" v-if="serviceData">
             <h4 class="qustion_header">热门问题</h4>
             <ul>
-                <li class="question_title">
-                    <span>问题1</span>
+                <li class="question_title" v-for="(item,index) in questionTitle" :key="index" @click="toQuestionDetail(item,index)">
+                    <span>{{item}}</span>
                      <svg class="arrow-svg" fill="#999">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                     </svg>
@@ -34,6 +34,7 @@
 <script>
     import headTop from 'src/components/header/head'
     import {getService} from 'src/service/getData'
+    import {mapMutations} from 'vuex'
     export default {
         data(){
             return {
@@ -49,6 +50,9 @@
            this.initData();
         },
         methods:{
+            ...mapMutations([
+               'SAVE_QUESTION' 
+            ]),
             //初始化数据
             async initData(){
                 this.serviceData = await getService();
@@ -61,13 +65,17 @@
                          }
                     })
                     //添加标题和内容
-                    if(!repeat){
-                        this.questionDetail.push(this.serviceData[item]);
-                        if(item.indexOf('Caption') !==-1){
+                    if(!repeat&&item.indexOf('Caption') !==-1){
                         this.questionTitle.push(this.serviceData[item]);
-                       }
+                    }else if(!repeat){
+                       this.questionDetail.push(this.serviceData[item]);
                     }
                 })
+            },
+             //保存问题详情
+            toQuestionDetail(title, index){
+                this.SAVE_QUESTION({title, detail: this.questionDetail[index]});
+                this.$router.push('/service/questionDetail');
             },
         }
     }

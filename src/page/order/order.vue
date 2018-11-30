@@ -1,16 +1,16 @@
-<template>
+ <template>
     <div class="order_page">
-        <head-top head-title="订单列表" go-back="true"></head-top>
+        <head-top head-title="订单列表" go-back='true'></head-top>
         <ul class="order_list_ul" v-load-more="loaderMore">
-            <li class="order_list_li" v-for="(item,index) in orderList" :key="index">
-                <img :src="imgBaseUrl + item.restaurant_image_url" class="restaurant_image"/>
+            <li class="order_list_li" v-for="item in orderList" :key="item.id">
+                <img :src="imgBaseUrl + item.restaurant_image_url" class="restaurant_image">
                 <section class="order_item_right">
                     <section @click="showDetail(item)">
                         <header class="order_item_right_header">
                             <section class="order_header">
-                                <h4>
-                                    <span class="ellpisis">{{item.restaurant_name}}</span>
-                                     <svg fill="#333" class="arrow_right">
+                                <h4 >
+                                    <span class="ellipsis">{{item.restaurant_name}} </span>
+                                    <svg fill="#333" class="arrow_right">
                                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                                     </svg>
                                 </h4>
@@ -24,12 +24,11 @@
                             <p class="order_name ellipsis">{{item.basket.group[0][0].name}}{{item.basket.group[0].length > 1 ? ' 等' + item.basket.group[0].length + '件商品' : ''}}</p>
                             <p class="order_amount">¥{{item.total_amount.toFixed(2)}}</p>
                         </section>
-                        <div class="order_again">
-                            <compute-time v-if="item.status_bar.title=='等待支付'" :time="item.time_pass"></compute-time>
-                            <router-link :to="{path:'/shop',query:{geohash,id:item.restaurant_id}}" tag="span" class="buy_again" v-else>再来一单</router-link>
-                            
-                        </div>
                     </section>
+                    <div class="order_again">
+                        <compute-time v-if="item.status_bar.title == '等待支付'" :time="item.time_pass"></compute-time>
+                        <router-link :to="{path: '/shop', query: {geohash, id: item.restaurant_id}}" tag="span" class="buy_again" v-else>再来一单</router-link>
+                    </div>
                 </section>
             </li>
         </ul>
@@ -40,8 +39,10 @@
         <transition name="router-slid" mode="out-in">
             <router-view></router-view>
         </transition>
+ 
     </div>
 </template>
+
 <script>
     import {mapState, mapMutations} from 'vuex'
     import headTop from 'src/components/header/head'
@@ -52,36 +53,38 @@
     import {getOrderList} from 'src/service/getData'
     import {loadMore} from 'src/components/common/mixin'
     import {imgBaseUrl} from 'src/config/env'
+
+
     export default {
-        data(){
+      data(){
             return{
-                orderList:[],
-                offset:0,
-                preventRepeat:false,//防止重复复获取
-                showLoading:true,//显示加载动画
-                imgBaseUrl,
+                orderList: null, //订单列表
+                offset: 0, 
+                preventRepeat: false,  //防止重复获取
+                showLoading: true, //显示加载动画
+                imgBaseUrl
             }
         },
         mounted(){
             this.initData();
         },
-        mixins:[loadMore],
-        components:{
+        mixins: [loadMore],
+        components: {
             headTop,
-            computeTime,
             footGuide,
             loading,
+            computeTime,
         },
-        computed:{
+        computed: {
             ...mapState([
-                'userInfo','geohash'
-            ])
+                'userInfo', 'geohash'
+            ]),
         },
-        methods:{
-            ...mapMutations([
+        methods: {
+             ...mapMutations([
                'SAVE_ORDER'
             ]),
-              //初始化获取信息
+            //初始化获取信息
             async initData(){
                 if (this.userInfo && this.userInfo.user_id) {
                     let res = await getOrderList(this.userInfo.user_id, this.offset);
@@ -93,40 +96,42 @@
             },
             //加载更多
             async loaderMore(){
-               if(this.preventRepeat){
-                  return;
-               }
-               this.preventRepeat = ture;
-               this.showLoading = true;
-               this.offset += 10;
-               //获取信息
-               let res = await getOrderList(this.userInfo.user_id,this.offset);
-               this.orderList = [...this.orderList,...res];
-               this.hideLoading();
-               if(res.length < 10){
-                    return;
-               }
-               this.preventRepeat = false;
+                if (this.preventRepeat) {
+                    return
+                }
+                this.preventRepeat = true;
+                this.showLoading = true;
+                this.offset += 10;
+                //获取信息
+                let res = await getOrderList(this.userInfo.user_id, this.offset);
+                this.orderList = [...this.orderList, ...res];
+                this.hideLoading();
+                if (res.length < 10) {
+                    return
+                }
+                this.preventRepeat = false;
             },
-             //显示详情页
+            //显示详情页
             showDetail(item){
                 this.SAVE_ORDER(item);
                 this.preventRepeat = false;
-                 this.$router.push('/order/orderDetail');
+                this.$router.push('/order/orderDetail');
             },
+            //生产环境与发布环境隐藏loading方式不同
             hideLoading(){
                 this.showLoading = false;
-            }
+            },
         },
-      watch: {
+        watch: {
             userInfo: function (value) {
-                if (value && value.user_id && !this.orderList.length) {
+                if (value && value.user_id && !this.orderList) {
                     this.initData();
                 }
             }
         }
     }
 </script>
+ 
 
 <style lang="scss" scoped>
     @import 'src/style/mixin';
